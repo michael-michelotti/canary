@@ -1,0 +1,5 @@
+archive/
+CLAUDE.md
+*.xlsx
+*.csv
+.claude/
