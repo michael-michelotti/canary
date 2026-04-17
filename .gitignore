@@ -3,3 +3,4 @@ CLAUDE.md
 *.xlsx
 *.csv
 .claude/
+.vscode/
