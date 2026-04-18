@@ -1,0 +1,12 @@
+[Unit]
+Description=SGP40 VOC compensation feeder (SHT45 -> SGP40)
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/sgp40-compensation-feeder
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

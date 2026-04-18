@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# SGP40 compensation feeder. Periodically copies ambient temperature and
+# relative humidity from the SHT45 (hwmon) into the SGP40 VOC driver's
+# IIO compensation inputs. The SGP40 uses these values internally to
+# correct for RH/temperature effects on the MOX sensing element.
+#
+# Units match between source and sink (both in millidegrees C and
+# millipercent RH), so no conversion is needed.
+#
+# Intended to run as a systemd service — see sgp40-compensation.service.
+
+set -euo pipefail
+
+SHT=$(dirname "$(grep -l sht4x /sys/class/hwmon/*/name)")
+SGP=$(dirname "$(grep -l sgp40_voc /sys/bus/iio/devices/*/name)")
+
+echo "sht45 hwmon:  $SHT"
+echo "sgp40_voc iio: $SGP"
+
+while true; do
+    cat "$SHT/temp1_input"     > "$SGP/out_temp_raw"
+    cat "$SHT/humidity1_input" > "$SGP/out_humidityrelative_raw"
+    sleep 10
+done
