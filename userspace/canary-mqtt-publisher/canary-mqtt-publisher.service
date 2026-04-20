@@ -1,0 +1,27 @@
+[Unit]
+Description=Canary MQTT publisher (sysfs -> MQTT)
+Documentation=https://github.com/michael-michelotti/canary
+After=network-online.target mosquitto.service
+Wants=network-online.target
+Requires=mosquitto.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/canary-mqtt-publisher
+Restart=on-failure
+RestartSec=3
+User=nobody
+Group=nogroup
+
+# Hardening: the daemon only needs to read sysfs and talk to localhost:1883.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

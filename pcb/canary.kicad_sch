@@ -3830,7 +3830,7 @@
 	)
 	(text "Pressure:"
 		(exclude_from_sim no)
-		(at 25.4 94.488 0)
+		(at 24.638 85.598 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4015,6 +4015,12 @@
 		(color 0 0 0 0)
 		(uuid "dc58e27f-1818-4dbb-b31f-233de0b644da")
 	)
+	(junction
+		(at 29.21 100.33)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e7d300af-547e-4591-b5cf-9a967df6bb23")
+	)
 	(wire
 		(pts
 			(xy 241.3 57.15) (xy 246.38 57.15)
@@ -4044,6 +4050,16 @@
 			(type default)
 		)
 		(uuid "0a103b4c-9445-4def-abf7-3c80ab25c6c6")
+	)
+	(wire
+		(pts
+			(xy 43.18 107.95) (xy 29.21 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0deab64c-c64f-4fa3-8f88-502f3b4a8387")
 	)
 	(wire
 		(pts
@@ -4114,6 +4130,16 @@
 			(type default)
 		)
 		(uuid "18037857-bdec-4b8e-88f6-42b8ea50b7fb")
+	)
+	(wire
+		(pts
+			(xy 29.21 107.95) (xy 29.21 100.33)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "183c15e0-cef1-4f2a-929a-d429bf7850f4")
 	)
 	(wire
 		(pts
@@ -4527,27 +4553,7 @@
 	)
 	(wire
 		(pts
-			(xy 43.18 107.95) (xy 39.37 107.95)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "64e6031d-5563-4f10-aafc-25c4d82185a8")
-	)
-	(wire
-		(pts
-			(xy 39.37 107.95) (xy 39.37 113.03)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "66104e77-a98d-4bc4-8eef-63a1dc569e46")
-	)
-	(wire
-		(pts
-			(xy 43.18 100.33) (xy 39.37 100.33)
+			(xy 43.18 100.33) (xy 29.21 100.33)
 		)
 		(stroke
 			(width 0)
@@ -4987,7 +4993,7 @@
 	)
 	(wire
 		(pts
-			(xy 39.37 100.33) (xy 39.37 95.25)
+			(xy 29.21 100.33) (xy 29.21 93.98)
 		)
 		(stroke
 			(width 0)
@@ -5473,7 +5479,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0201_0603Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 120.65 138.43 0)
 			(effects
 				(font
@@ -5907,7 +5913,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0201_0603Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 90.17 36.83 0)
 			(effects
 				(font
@@ -6116,7 +6122,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0201_0603Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 67.31 139.7 0)
 			(effects
 				(font
@@ -6325,7 +6331,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0201_0603Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 264.16 104.14 0)
 			(effects
 				(font
@@ -6781,7 +6787,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0201_0603Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 173.99 60.96 0)
 			(effects
 				(font
@@ -6991,7 +6997,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Sensor_Humidity:Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad"
+		(property "Footprint" "My_Footprints:DFN-4_L1.5-W1.5-P0.8-TL-EP"
 			(at 114.3 154.94 0)
 			(effects
 				(font
@@ -7076,7 +7082,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0201_0603Metric"
+		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
 			(at 254 104.14 0)
 			(effects
 				(font
@@ -7658,7 +7664,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0201_0603Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 166.37 45.72 0)
 			(effects
 				(font
@@ -8061,7 +8067,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0201_0603Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 184.15 41.91 0)
 			(effects
 				(font
@@ -8137,7 +8143,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0201_0603Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 74.93 39.37 0)
 			(effects
 				(font
@@ -8450,72 +8456,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 39.37 113.03 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "c7270766-5f90-4f18-9ef7-e4a74b0fb569")
-		(property "Reference" "#PWR010"
-			(at 39.37 119.38 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 39.37 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 39.37 113.03 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 39.37 113.03 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 39.37 113.03 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "fd9a0147-fee1-4883-8eda-9f05b201e16a")
-		)
-		(instances
-			(project "canary"
-				(path "/a4817684-092e-4b1c-a55e-80cb81c55c67"
-					(reference "#PWR010")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C_Small")
 		(at 82.55 95.25 90)
 		(unit 1)
@@ -8540,7 +8480,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0201_0603Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 82.55 95.25 0)
 			(effects
 				(font
@@ -8748,7 +8688,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0201_0603Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 222.25 45.72 0)
 			(effects
 				(font
@@ -9088,7 +9028,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0201_0603Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 254 114.3 0)
 			(effects
 				(font
@@ -9164,7 +9104,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0201_0603Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 82.55 90.17 0)
 			(effects
 				(font
@@ -9240,7 +9180,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0201_0603Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 90.17 41.91 0)
 			(effects
 				(font
@@ -9358,7 +9298,7 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 39.37 95.25 0)
+		(at 29.21 93.98 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9367,7 +9307,7 @@
 		(fields_autoplaced yes)
 		(uuid "ff660557-f2eb-4adf-8423-9876bdebfd9e")
 		(property "Reference" "#PWR011"
-			(at 39.37 99.06 0)
+			(at 29.21 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9376,7 +9316,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 39.37 90.17 0)
+			(at 29.21 88.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9384,7 +9324,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 39.37 95.25 0)
+			(at 29.21 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9393,7 +9333,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 39.37 95.25 0)
+			(at 29.21 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9402,7 +9342,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 39.37 95.25 0)
+			(at 29.21 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
