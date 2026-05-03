@@ -8,6 +8,7 @@
 
 #include <dirent.h>
 #include <errno.h>
+#include <math.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,6 +22,23 @@
 #define BROKER_PORT          1883
 #define PUBLISH_INTERVAL_SEC 2
 #define KEEPALIVE_SEC        30
+
+/*
+ * Self-heating compensation constants. See CLAUDE.md "Self-heating compensation"
+ * for derivation. FACTORs are calibrated for the open HAT with no enclosure.
+ * Recalibrate if airflow regime changes.
+ */
+#define FACTOR_TMP119  3.31
+#define FACTOR_SHT45   2.90
+
+/*
+ * EWMA smoothing for the SoC temperature input. Raw thermal_zone0/temp jumps
+ * several C between samples; a single-pole filter at alpha=0.05 with 2s
+ * sampling gives a ~39s time constant, killing the spike noise without
+ * lagging real ramps.
+ */
+#define CPU_TEMP_PATH  "/sys/class/thermal/thermal_zone0/temp"
+#define CPU_EWMA_ALPHA 0.05
 
 /*
  * Each entry says: which kernel subsystem to look in, what the driver's
@@ -127,32 +145,51 @@ static int read_double(const char *path, double *out) {
     return (n == 1) ? 0 : -1;
 }
 
-static void publish_sensor(struct mosquitto *mosq, struct sensor *s, time_t ts) {
+static int read_sensor_value(const struct sensor *s, double *out) {
     long raw;
     if (read_long(s->path, &raw) != 0) {
         fprintf(stderr, "read %s failed: %s\n", s->path, strerror(errno));
-        return;
+        return -1;
     }
 
     double dynamic_scale = 1.0;
     if (s->scale_path[0] != '\0') {
         if (read_double(s->scale_path, &dynamic_scale) != 0) {
             fprintf(stderr, "read %s failed: %s\n", s->scale_path, strerror(errno));
-            return;
+            return -1;
         }
     }
 
-    double value = (double)raw * dynamic_scale * s->scale;
+    *out = (double)raw * dynamic_scale * s->scale;
+    return 0;
+}
 
+static void publish_value(struct mosquitto *mosq, const char *topic,
+                          const char *unit, double value, time_t ts) {
     char payload[160];
     int len = snprintf(payload, sizeof(payload),
                        "{\"ts\":%ld,\"value\":%.3f,\"unit\":\"%s\"}",
-                       (long)ts, value, s->unit);
+                       (long)ts, value, unit);
 
-    int rc = mosquitto_publish(mosq, NULL, s->topic, len, payload, 0, false);
+    int rc = mosquitto_publish(mosq, NULL, topic, len, payload, 0, false);
     if (rc != MOSQ_ERR_SUCCESS) {
-        fprintf(stderr, "publish %s: %s\n", s->topic, mosquitto_strerror(rc));
+        fprintf(stderr, "publish %s: %s\n", topic, mosquitto_strerror(rc));
     }
+}
+
+/* SoC temperature in C; thermal_zone0/temp is reported in milli-C. */
+static int read_cpu_temp(double *out) {
+    long raw;
+    if (read_long(CPU_TEMP_PATH, &raw) != 0) return -1;
+    *out = (double)raw * 0.001;
+    return 0;
+}
+
+/* Magnus saturation vapor pressure (hPa). RH ratio under temperature change
+ * is e_s(T_sensor) / e_s(T_ambient); the 6.112 prefactor cancels but keeping
+ * it makes the function reusable. */
+static double magnus_es(double t_c) {
+    return 6.112 * exp(17.62 * t_c / (243.12 + t_c));
 }
 
 int main(void) {
@@ -182,13 +219,47 @@ int main(void) {
         }
     }
 
+    double cpu_filt = NAN;
+
     while (keep_running) {
         time_t now = time(NULL);
+
+        double raw_tmp119 = NAN, raw_sht45_t = NAN, raw_sht45_rh = NAN;
+
         for (size_t i = 0; i < sensor_count; i++) {
-            if (sensors[i].path[0] != '\0') {
-                publish_sensor(mosq, &sensors[i], now);
-            }
+            if (sensors[i].path[0] == '\0') continue;
+            double v;
+            if (read_sensor_value(&sensors[i], &v) != 0) continue;
+            publish_value(mosq, sensors[i].topic, sensors[i].unit, v, now);
+
+            if      (strcmp(sensors[i].topic, "canary/temp")       == 0) raw_tmp119   = v;
+            else if (strcmp(sensors[i].topic, "canary/temp_sht45") == 0) raw_sht45_t  = v;
+            else if (strcmp(sensors[i].topic, "canary/humidity")   == 0) raw_sht45_rh = v;
         }
+
+        double cpu_raw;
+        if (read_cpu_temp(&cpu_raw) == 0) {
+            cpu_filt = isnan(cpu_filt)
+                       ? cpu_raw
+                       : CPU_EWMA_ALPHA * cpu_raw + (1.0 - CPU_EWMA_ALPHA) * cpu_filt;
+        }
+
+        if (!isnan(raw_tmp119) && !isnan(cpu_filt)) {
+            double t = raw_tmp119 - (cpu_filt - raw_tmp119) / FACTOR_TMP119;
+            publish_value(mosq, "canary/temp_corrected", "C", t, now);
+        }
+
+        double sht45_t_corr = NAN;
+        if (!isnan(raw_sht45_t) && !isnan(cpu_filt)) {
+            sht45_t_corr = raw_sht45_t - (cpu_filt - raw_sht45_t) / FACTOR_SHT45;
+            publish_value(mosq, "canary/temp_sht45_corrected", "C", sht45_t_corr, now);
+        }
+
+        if (!isnan(raw_sht45_rh) && !isnan(sht45_t_corr)) {
+            double rh = raw_sht45_rh * magnus_es(raw_sht45_t) / magnus_es(sht45_t_corr);
+            publish_value(mosq, "canary/humidity_corrected", "%RH", rh, now);
+        }
+
         sleep(PUBLISH_INTERVAL_SEC);
     }
 

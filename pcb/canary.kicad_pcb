@@ -183,7 +183,7 @@
 		(path "/95a5889d-36f7-4eec-92c7-e61811f9b1ef")
 		(sheetname "/")
 		(sheetfile "canary.kicad_sch")
-		(attr through_hole dnp)
+		(attr through_hole)
 		(fp_line
 			(start 3.92 -1.38)
 			(end 3.92 49.64)
