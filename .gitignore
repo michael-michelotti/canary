@@ -51,3 +51,10 @@ fp-info-cache
 
 *.png
 *.zip
+
+# Qt Creator (dashboard/)
+dashboard/build/
+dashboard/.qtcreator/
+dashboard/*.user
+dashboard/CMakeLists.txt.user
+build-dashboard-*/
