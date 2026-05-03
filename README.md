@@ -2,7 +2,7 @@
 
 **An indoor air quality HAT for the Raspberry Pi 4 — custom PCB, custom Linux kernel driver, end-to-end MQTT pipeline.**
 
-<!-- TODO: hero image — top-down photo of the assembled HAT seated on a Pi 4 -->
+[Canary mounted on Raspberry Pi 4]("https://github.com/user-attachments/assets/5b21dadf-f64f-4033-832a-519e8da21b43")
 
 Canary measures temperature, humidity, pressure and VOCs through four I2C sensors on a Pi-mounted HAT and features:
 
@@ -27,6 +27,24 @@ Canary measures temperature, humidity, pressure and VOCs through four I2C sensor
 All four sensors share I2C bus 1 (`SDA=GPIO2`, `SCL=GPIO3`) with the Pi's on-board 1.8 kΩ pull-ups. On the prototype, breakouts are daisy-chained through a Stemma QT 5-port hub; on the v1 PCB the bare sensors share a single I2C bus.
 
 ![Canary block diagram](docs/images/block_diagram.svg)
+
+---
+
+## Repository layout
+
+```
+canary/
+├── overlays/                  device-tree overlays (.dts + .dtbo)
+├── sgp40_voc/                 custom SGP40 IIO driver (kernel module)
+├── tmp119/                    custom TMP119 IIO driver (kernel module)
+├── userspace/
+│   ├── canary-mqtt-publisher/   sysfs → MQTT publisher (C, libmosquitto)
+│   └── sgp40-compensation/      hwmon → IIO compensation feeder (bash + systemd)
+├── dashboard/                 Qt 6 / QML laptop dashboard
+├── pcb/                       KiCad project (schematic + layout)
+├── tools/                     calibration scripts and analysis
+└── archive/                   early planning docs and BOM
+```
 
 ---
 
@@ -59,8 +77,6 @@ Driver setup for the four sensors:
 
 The Pi 4 SoC heats the temperature sensors by about 4°C even at idle. The correction is a property of board geometry and airflow, so it lives in the **publisher daemon**, not the sensor kernel drivers themselves.
 
-<!-- TODO: chart image — raw TMP119 vs CPU temp for a stress run -->
-
 ### Model
 
 I utilize the following compensation model, popularized by the [Enviro+ project](https://github.com/pimoroni/enviroplus-python/blob/main/examples/compensated-temperature.py):
@@ -77,11 +93,13 @@ t_corrected = t_sensor − (t_cpu − t_sensor) / FACTOR
 
 Stress-ramp sweep using `stress-ng --cpu N`, holding 15-20 minutes at idle / 1 core at 50 % / 1c / 2c / 3c / 4c. The mean of the last 5 minutes of each step gives one `(t_cpu, t_sensor)` point. Linear regression with `x = t_cpu − t_sensor`, `y = t_sensor` yields slope `1/FACTOR` and intercept corrected `t_ambient`.
 
+[1 core at 50% temperatures]("https://github.com/user-attachments/assets/fe940f18-b941-41db-b950-d43d50704e0c")
+
 Tools used:
 
 - `tools/log_temps.py` — CSV logger, runs on the Pi during the sweep
 
-<!-- TODO: chart image — TMP119 compensation curve PNG -->
+[TMP119 compensation fit]("https://github.com/user-attachments/assets/5eedfb0d-c81e-4d2c-b167-9afea9644496")
 
 Calibrated values for the deployed board (no enclosure, no wind, ~24°C true ambient):
 
@@ -187,7 +205,7 @@ Qt 6.11 / QML, MinGW 64-bit. Subscribes to `canary/#` over the LAN.
 - `Main.qml` — `ApplicationWindow` with a header and a `GridLayout` of five `SensorChart` instances.
 - Uses **QtGraphs** (the Qt Charts successor)
 
-<!-- TODO: dashboard screenshot — running window showing all five live charts. -->
+[Canary Qt dashboard]("https://github.com/user-attachments/assets/e086b054-8fc9-4fea-99c4-28fdfa49f018")
 
 ---
 
@@ -199,24 +217,6 @@ The custom PCB KiCad project lives in [`pcb/`](pcb/) (`canary.kicad_pro`, `canar
 - AT24C32 EEPROM at I2C address 0x50 on bus 0 for HAT auto-detection
 - I2C net carries all four sensors; pull-ups intentionally omitted (Pi provides 1.8 kΩ on-board)
 - Mounting holes match the [HAT mechanical spec](https://github.com/raspberrypi/hats)
-
----
-
-## Repository layout
-
-```
-canary/
-├── overlays/                  device-tree overlays (.dts + .dtbo)
-├── sgp40_voc/                 custom SGP40 IIO driver (kernel module)
-├── tmp119/                    custom TMP119 IIO driver (kernel module)
-├── userspace/
-│   ├── canary-mqtt-publisher/   sysfs → MQTT publisher (C, libmosquitto)
-│   └── sgp40-compensation/      hwmon → IIO compensation feeder (bash + systemd)
-├── dashboard/                 Qt 6 / QML laptop dashboard
-├── pcb/                       KiCad project (schematic + layout)
-├── tools/                     calibration scripts and analysis
-└── archive/                   early planning docs and BOM
-```
 
 ---
 
