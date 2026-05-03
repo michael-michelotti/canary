@@ -26,25 +26,7 @@ Canary measures temperature, humidity, pressure and VOCs through four I2C sensor
 
 All four sensors share I2C bus 1 (`SDA=GPIO2`, `SCL=GPIO3`) with the Pi's on-board 1.8 kΩ pull-ups. On the prototype, breakouts are daisy-chained through a Stemma QT 5-port hub; on the v1 PCB the bare sensors share a single I2C bus.
 
-```
-Pi 4 Model B (Raspberry Pi OS Bookworm 64-bit)
-  └─ I2C bus 1
-       ├─ SHT45         (0x44)  →  /sys/class/hwmon/hwmonN/
-       ├─ BMP388        (0x77)  →  /sys/bus/iio/devices/iio:deviceN/
-       ├─ TMP119        (0x48)  →  /sys/bus/iio/devices/iio:deviceN/  (custom driver)
-       └─ SGP40         (0x59)  →  /sys/bus/iio/devices/iio:deviceN/  (custom driver)
-                                            │
-                                            ▼
-                          [canary-mqtt-publisher (C, libmosquitto)]
-                                            │
-                                            ▼
-                              [Mosquitto broker, port 1883]
-                                            │
-                                            ▼
-                          [canary-dashboard (Qt 6 / QML, on laptop)]
-```
-
-<!-- TODO: replace ASCII diagram with an excalidraw block diagram SVG  -->
+![Canary block diagram](docs/images/block_diagram.svg)
 
 ---
 
@@ -77,7 +59,7 @@ Driver setup for the four sensors:
 
 The Pi 4 SoC heats the temperature sensors by about 4°C even at idle. The correction is a property of board geometry and airflow, so it lives in the **publisher daemon**, not the sensor kernel drivers themselves.
 
-<!-- TODO: chart image — raw TMP119 vs CPU temp vs corrected TMP119 over a stress-ramp run -->
+<!-- TODO: chart image — raw TMP119 vs CPU temp for a stress run -->
 
 ### Model
 
@@ -98,6 +80,8 @@ Stress-ramp sweep using `stress-ng --cpu N`, holding 15-20 minutes at idle / 1 c
 Tools used:
 
 - `tools/log_temps.py` — CSV logger, runs on the Pi during the sweep
+
+<!-- TODO: chart image — TMP119 compensation curve PNG -->
 
 Calibrated values for the deployed board (no enclosure, no wind, ~24°C true ambient):
 
@@ -155,8 +139,6 @@ sgp40_voc/
 
 The ported algorithm was referenced against the existing [Sensirion gas-index-algorithm](https://github.com/Sensirion/gas-index-algorithm) implementation. A sanity check on the running driver confirms the expected behavior: the VOC index ramps up over the first 45 seconds and then settles to a baseline near 100 in clean air.
 
-<!-- TODO: chart or terminal-capture image — VOC index over the first ~2 minutes after driver load -->
-
 ---
 
 ## TMP119 driver
@@ -212,8 +194,6 @@ Qt 6.11 / QML, MinGW 64-bit. Subscribes to `canary/#` over the LAN.
 ## PCB
 
 The custom PCB KiCad project lives in [`pcb/`](pcb/) (`canary.kicad_pro`, `canary.kicad_sch`, `canary.kicad_pcb`). The v1 fabrication design is complete, and the board was fabricated by JLCPCB.
-
-<!-- TODO: photograph of the manufactured PCB -->
 
 - 40-pin GPIO header pinout matches the Pi HAT spec
 - AT24C32 EEPROM at I2C address 0x50 on bus 0 for HAT auto-detection

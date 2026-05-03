@@ -8,8 +8,8 @@ reference/
 graphics/
 production/
 **/*-backups/
-*.svg
 *.json
+pcb/*.svg
 
 # KiCad 
 # Temporary files
