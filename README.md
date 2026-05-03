@@ -2,7 +2,7 @@
 
 **An indoor air quality HAT for the Raspberry Pi 4 — custom PCB, custom Linux kernel driver, end-to-end MQTT pipeline.**
 
-[Canary mounted on Raspberry Pi 4]("https://github.com/user-attachments/assets/5b21dadf-f64f-4033-832a-519e8da21b43")
+![Canary mounted on Raspberry Pi 4](https://github.com/user-attachments/assets/5b21dadf-f64f-4033-832a-519e8da21b43)
 
 Canary measures temperature, humidity, pressure and VOCs through four I2C sensors on a Pi-mounted HAT and features:
 
@@ -93,13 +93,13 @@ t_corrected = t_sensor − (t_cpu − t_sensor) / FACTOR
 
 Stress-ramp sweep using `stress-ng --cpu N`, holding 15-20 minutes at idle / 1 core at 50 % / 1c / 2c / 3c / 4c. The mean of the last 5 minutes of each step gives one `(t_cpu, t_sensor)` point. Linear regression with `x = t_cpu − t_sensor`, `y = t_sensor` yields slope `1/FACTOR` and intercept corrected `t_ambient`.
 
-[1 core at 50% temperatures]("https://github.com/user-attachments/assets/fe940f18-b941-41db-b950-d43d50704e0c")
+![1 core at 50% temperatures](https://github.com/user-attachments/assets/fe940f18-b941-41db-b950-d43d50704e0c)
 
 Tools used:
 
 - `tools/log_temps.py` — CSV logger, runs on the Pi during the sweep
 
-[TMP119 compensation fit]("https://github.com/user-attachments/assets/5eedfb0d-c81e-4d2c-b167-9afea9644496")
+![TMP119 compensation fit](https://github.com/user-attachments/assets/5eedfb0d-c81e-4d2c-b167-9afea9644496)
 
 Calibrated values for the deployed board (no enclosure, no wind, ~24°C true ambient):
 
@@ -205,7 +205,7 @@ Qt 6.11 / QML, MinGW 64-bit. Subscribes to `canary/#` over the LAN.
 - `Main.qml` — `ApplicationWindow` with a header and a `GridLayout` of five `SensorChart` instances.
 - Uses **QtGraphs** (the Qt Charts successor)
 
-[Canary Qt dashboard]("https://github.com/user-attachments/assets/e086b054-8fc9-4fea-99c4-28fdfa49f018")
+![Canary Qt dashboard](https://github.com/user-attachments/assets/e086b054-8fc9-4fea-99c4-28fdfa49f018)
 
 ---
 
