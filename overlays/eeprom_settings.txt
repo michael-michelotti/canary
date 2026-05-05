@@ -1,0 +1,35 @@
+########################################################################
+# EEPROM settings for the Canary IAQ HAT (HAT+ format)
+#
+# Build:  eepmake eeprom_settings.txt canary.eep
+# Flash:  sudo eepflash.sh -w -f=canary.eep -t=24c32
+#
+# HAT+ drops the legacy GPIO bank knobs (gpio_drive, gpio_slew,
+# gpio_hysteresis, back_power) and the per-pin setgpio table. The EEPROM
+# stores only the *name* of the overlay (dt_blob); the bootloader looks
+# up the matching .dtbo in /boot/firmware/overlays/ at boot. Pi 4
+# firmware reads HAT+ EEPROMs fine.
+#
+########################################################################
+
+# 128-bit RFC 4122 UUID
+product_uuid 630e2974-4778-11f1-a8ef-d83addbb73ae
+
+# 16-bit product id
+product_id 0x0001
+
+# 16-bit product version
+product_ver 0x0001
+
+# ASCII vendor string (max 255 chars)
+vendor "Michael Michelotti"
+
+# ASCII product string (max 255 chars)
+product "Canary IAQ HAT"
+
+# Current the HAT can supply back to the Pi, in mA. 0 = does not back-power.
+current_supply 0
+
+# Name of the DT overlay to load. The actual canary-hat.dtbo must be
+# present in /boot/firmware/overlays/ on the Pi.
+dt_blob "canary-hat"
